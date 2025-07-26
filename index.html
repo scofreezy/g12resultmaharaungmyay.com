@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="UTF-8">
+  <title>Exam Result Checker</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 2em; }
+    #countdown { font-size: 2em; margin-top: 1em; }
+    #searchBox { margin-top: 2em; display: none; }
+    input, button { font-size: 1em; padding: .5em; }
+    #result, #error { margin-top: 1em; color: green; }
+    #error { color: red; }
+  </style>
+</head>
+<body>
+  <h1>Exam Result Checker</h1>
+  <div id="countdown">Loading countdown...</div>
+  <div id="searchBox">
+    <input type="text" id="studentId" placeholder="မနအ-၁၅၁">
+    <button onclick="search()">ရှာဖွေမည်</button>
+  </div>
+  <div id="loading" style="display:none;">Loading...</div>
+  <div id="result"></div>
+  <div id="error"></div>
+
+  <script>
+    const end = new Date("2025-07-27T04:00:00+06:30").getTime();
+    const countdownInterval = setInterval(() => {
+      const now = new Date().getTime();
+      const diff = end - now;
+      if (diff <= 0) {
+        clearInterval(countdownInterval);
+        document.getElementById("countdown").style.display = "none";
+        document.getElementById("searchBox").style.display = "block";
+      } else {
+        const hours = String(Math.floor((diff / (1000 * 60 * 60)))).padStart(2, '0');
+        const minutes = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+        const seconds = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
+        document.getElementById("countdown").innerText = `${hours}:${minutes}:${seconds}`;
+      }
+    }, 1000);
+
+    async function search() {
+      const id = document.getElementById('studentId').value.trim();
+      const loading = document.getElementById('loading');
+      const result = document.getElementById('result');
+      const error = document.getElementById('error');
+      loading.style.display = 'block';
+      result.innerHTML = '';
+      error.innerHTML = '';
+      setTimeout(() => {
+        loading.style.display = 'none';
+        if (id === 'မနအ-၁၅၁') {
+          result.innerHTML = `
+            အမည် - မောင်ဖုန်းအောင်<br>
+            ဖခင်အမည် - ဦးသိန်းစိုး<br>
+            ဂုဏ်ထူးရဘာသာ - မြန်မာစာ၊အင်္ဂလိပ်စာ၊သင်္ချာ၊ရူပဗေဒ
+          `;
+        } else {
+          error.innerText = 'Server တောင်းဆိုမှုများပြားနေပါသည်';
+        }
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
